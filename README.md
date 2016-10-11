@@ -12,7 +12,7 @@ Setup:
 ## 3. Setup Environment:
    cd node-note; npm i --save
    
-## 4. Install app to your phone: [Android/iOS]
+## 4. Install app to your phone: [Only Android is available now]
    download from http://shareplus.co.nf
    
 ## 5. Open app, and find your UUID: 
