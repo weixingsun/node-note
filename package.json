@@ -7,9 +7,9 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "node-opensignal-api": "latest",
     "async": "latest",
-    "ps-node": "latest"
+    "node-opensignal-api": "latest",
+    "ps-node": "git+https://github.com/weixingsun/ps.git"
   },
   "repository": {
     "type": "git",

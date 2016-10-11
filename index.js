@@ -47,15 +47,38 @@ function note(app,me,email){
 }
 function PS(list){
     //console.log( 'proc list='+ JSON.stringify(list));
-    console.log('['+list.length+']proc:'+list[0].pid+' alive at : '+(new Date()).yyyymmddhhmmss())
+    console.log('['+list.length+']proc:'+JSON.stringify(list)+' alive at : '+(new Date()).yyyymmddhhmmss())
 }
+//compare['<'](1,2)
+var compare = {
+    '<': function (x, y) { return x < y },
+    '>': function (x, y) { return x > y }
+};
 
-function findProc(cmd,name,found,not_found){
+//cond = ['cpu<1','#<1']
+function triggerByCondition(cond_str,list){
+  let arr = cond_str.split(/<|>/)
+  let con = arr[0]
+  let op = cond_str.substring(con.length,con.length+1)
+  let num = parseInt(arr[1])
+  //console.log('con='+con+' op='+op+' num='+num)
+  if(con==='#'){
+    return compare[op](list.length,num)
+  }else{
+    let filtered_list = list.filter((item)=>{ 
+      let res = parseFloat(item[con])
+      return !compare[op]( res,num )
+    })
+    return filtered_list.length<1
+  }
+}
+function findProc(uuid,name,cond,found,not_found){
   return ps.lookup(
-    { command:cmd, psargs:' aux |head -1; ps aux|grep '+name, }, 
+    { psargs:" aux |head -1; ps aux|grep -v grep|grep -v "+uuid+"|grep "+name, }, 
     function(err, resultList ) {
       if (err) throw new Error( err );
-      if(resultList.length===0){
+      let trigger=triggerByCondition(cond,resultList);
+      if(trigger){
         not_found();
         live = false;
       }else{ 
@@ -66,10 +89,12 @@ function findProc(cmd,name,found,not_found){
 }
 
 let uuid = process.argv[2]
+let name = process.argv[3]
+let cond = process.argv[4]
 async.whilst(
     ()=>{return live},
     (next)=>{
-      findProc('node','start', PS, ()=>note(ID,uuid,email)),
+      findProc(uuid,name, cond, PS, ()=>note(ID,uuid,email)),
       //child_process.execSync("sleep 5"); 
       //sleep(2000)
       setTimeout(next,5000);
