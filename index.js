@@ -7,7 +7,6 @@ var async = require('async');
 //var cp = require('child_process');
 var onesignal_client = onesignal.createClient();
 var ID = 'beed51f1-1763-4ab3-bcd2-da4364786ceb';
-var ME = 'b3166003-1471-493d-be8f-b10e2f7a8fb8';
 var live = true
 //var exec = deasync(cp.exec);
 Date.prototype.yyyymmddhhmmss = function() {
@@ -66,11 +65,11 @@ function findProc(cmd,name,found,not_found){
   );
 }
 
-
+let uuid = process.argv[2]
 async.whilst(
     ()=>{return live},
     (next)=>{
-      findProc('node','start', PS, ()=>note(ID,ME,email)),
+      findProc('node','start', PS, ()=>note(ID,uuid,email)),
       //child_process.execSync("sleep 5"); 
       //sleep(2000)
       setTimeout(next,5000);
