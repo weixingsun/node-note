@@ -1,0 +1,25 @@
+{
+  "name": "node-note",
+  "version": "0.0.1",
+  "description": "A Node.js app to monitor running process, send msg to phone when completed",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "node-opensignal-api": "latest",
+    "async": "latest",
+    "ps-node": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/weixingsun/node-note"
+  },
+  "keywords": [
+    "node",
+    "monitor",
+    "onesignal"
+  ],
+  "author": "Weixing Sun",
+  "license": "MIT"
+}
