@@ -8,6 +8,9 @@ var async = require('async');
 var onesignal_client = onesignal.createClient();
 var ID = 'beed51f1-1763-4ab3-bcd2-da4364786ceb';
 var live = true
+let uuid = process.argv[2]  //111-222-333,aaa-bbb-ccc
+let name = process.argv[3]  //node,mysql,rstudio,
+let cond = process.argv[4]  //#<1,cpu>50,mem>50
 //var exec = deasync(cp.exec);
 Date.prototype.yyyymmddhhmmss = function() {
    var yyyy = this.getFullYear();
@@ -20,8 +23,8 @@ Date.prototype.yyyymmddhhmmss = function() {
             .concat(' ').concat(hh).concat(':').concat(min).concat(':').concat(ss);
 };
 var email = {
-  title: 'Event from '+os.hostname() +' at '+ (new Date()).yyyymmddhhmmss(),
-  value: 'R test finished, and report is sent to your email'
+  title: 'Event '+ cond +' from '+os.hostname() +' at '+ (new Date()).yyyymmddhhmmss(),
+  value: 'Report/Email will be in next release'
 }
 
 function note(app,me,email){
@@ -31,11 +34,13 @@ function note(app,me,email){
         'en': email.title,
     },
     data: {
+        'custom': '1',
+        'title': email.title,
         'value': email.value,
         //'pics': ['1.jpg','2.jpg'],
     },
     //tags: [{ "key": "custom_tag", "relation": "=", "value": "custom_value"}],
-    include_player_ids: [me],
+    include_player_ids: me.split(','),
   };
   onesignal_client.notifications.create('', params, function (err, response) {
     if (err) {
@@ -46,8 +51,7 @@ function note(app,me,email){
   });
 }
 function PS(list){
-    //console.log( 'proc list='+ JSON.stringify(list));
-    console.log('['+list.length+']proc:'+JSON.stringify(list)+' alive at : '+(new Date()).yyyymmddhhmmss())
+    console.log('['+list.length+'] alive at : '+(new Date()).yyyymmddhhmmss()+' list='+JSON.stringify(list))
 }
 //compare['<'](1,2)
 var compare = {
@@ -91,9 +95,6 @@ function findProc(uuid,name,cond,found,not_found){
   );
 }
 
-let uuid = process.argv[2]
-let name = process.argv[3]
-let cond = process.argv[4]
 async.whilst(
     ()=>{return live},
     (next)=>{
