@@ -76,13 +76,16 @@ function findProc(uuid,name,cond,found,not_found){
   return ps.lookup(
     { psargs:" aux |head -1; ps aux|grep -v grep|grep -v "+uuid+"|grep "+name, }, 
     function(err, resultList ) {
-      if (err) throw new Error( err );
-      let trigger=triggerByCondition(cond,resultList);
-      if(trigger){
-        not_found();
-        live = false;
-      }else{ 
-        found(resultList);
+      if(resultList==null || resultList.length===0){
+        throw new Error( 'No process '+name+' found.' );
+      }else{ //if (err) throw new Error( err );
+        let trigger=triggerByCondition(cond,resultList);
+        if(trigger){
+          not_found();
+          live = false;
+        }else{ 
+          found(resultList);
+        }
       }
     }
   );
