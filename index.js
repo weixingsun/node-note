@@ -69,11 +69,12 @@ function triggerByCondition(cond_str,list){
   if(con==='#'){
     return compare[op](list.length,num)
   }else{
-    let filtered_list = list.filter((item)=>{ 
+    let match_list = []
+    list.map((item)=>{ 
       let res = parseFloat(item[con])
-      return !compare[op]( res,num )
+      if(compare[op]( res,num )) match_list.push(item)
     })
-    return filtered_list.length<1
+    return match_list.length>0
   }
 }
 function findProc(uuid,name,cond,found,not_found){
