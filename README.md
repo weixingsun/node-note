@@ -1,7 +1,7 @@
 # node-note
-A Node.js app to monitor your running process, send msg to phone when it completed
-Supported OS: Linux, Mac, 
-Mobile End: Android, [iOS will be available soon]
+## A Node.js app to monitor your running process, send msg to phone when it completed
+   Supported OS: Linux, Mac, 
+   Mobile End: Android, [iOS will be available soon]
 
 Setup:
 
