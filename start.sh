@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ $# != 3 ] ; then 
-  echo "Start format: ./start.sh [name] [condition] [UUID]" >&2 ; 
+  echo "Start format: ./start.sh [UUID] [name] [condition]" >&2 ; 
   exit 1 ; 
 fi
 uuid=$1
