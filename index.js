@@ -79,7 +79,7 @@ function triggerByCondition(cond_str,list){
 }
 function findProc(uuid,name,cond,found,not_found){
   return ps.lookup(
-    { psargs:" aux |head -1; ps aux|grep -v grep|grep -v "+uuid+"|grep "+name, }, 
+    { name:name, except:uuid, },
     function(err, resultList ) {
       if(resultList==null || resultList.length===0){
         throw new Error( 'No process '+name+' found.' );
