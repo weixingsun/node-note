@@ -1,4 +1,4 @@
-# node-note
+# node-mobile-note
 ### A Node.js app to monitor your running process, send msg to phone when it meet the condition you defined
    Supported OS: Linux, Mac, Win7+
    
