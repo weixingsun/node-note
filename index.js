@@ -23,13 +23,15 @@ Date.prototype.yyyymmddhhmmss = function() {
             .concat(' ').concat(hh).concat(':').concat(min).concat(':').concat(ss);
 };
 var email = {
-  title: 'Event '+ cond +' from '+os.hostname() +' at '+ (new Date()).yyyymmddhhmmss(),
+  title: 'Event '+ cond +' from '+os.hostname(),
   value: 'Report/Email will be in next release'
 }
 
 function note(app,me,email){
   var params = {
     app_id: app,
+    device_type: 9, //0:ios,1:android,2:amazon,3:win_phone_mpns,4:chrome_app,5:chrome_web_push,6:win_phone_wns,7:safari,8:firefox,9:macos
+    language: 'en',
     contents: {
         'en': email.title,
     },
@@ -37,6 +39,9 @@ function note(app,me,email){
         'custom': '1',
         'title': email.title,
         'value': email.value,
+        'time': (new Date()).yyyymmddhhmmss(),
+        'host': os.hostname(),
+        'condition': cond,
         //'pics': ['1.jpg','2.jpg'],
     },
     //tags: [{ "key": "custom_tag", "relation": "=", "value": "custom_value"}],
