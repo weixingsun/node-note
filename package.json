@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "async": "latest",
-    "node-opensignal-api": "latest",
+    "bpush-nodejs": "git+https://github.com/weixingsun/bpush-nodejs.git",
     "ps-node": "git+https://github.com/weixingsun/ps.git"
   },
   "repository": {

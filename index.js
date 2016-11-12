@@ -1,14 +1,18 @@
-var onesignal = require('node-opensignal-api');
+//var onesignal = require('node-opensignal-api');
+var bpush = require('bpush-nodejs');
 var os = require("os");
 var ps = require('ps-node');
 var async = require('async');
 //var sleep = require('sleep');
 //var deasync = require('deasync');
 //var cp = require('child_process');
-var onesignal_client = onesignal.createClient();
-var ID = 'beed51f1-1763-4ab3-bcd2-da4364786ceb';
+//var onesignal_client = onesignal.createClient();
+var aki = 'WAqWASmCo1GO6uA2AWkjs868PVDRaQOO'
+var ski = 'X4WIxOH4ybCzNZ6xdSG69kQ5eGzkDs2S'
+var aka = '6MbvSM9MLCPIOYK4I05Ox0FGoggM5d9L'
+var ska = '2GvcaUXXlWvMIOSWSSbaEnGo8lxg49Vy'
 var live = true
-let uuid = process.argv[2]  //111-222-333,aaa-bbb-ccc
+let uuid = process.argv[2]  //channel_id
 let name = process.argv[3]  //node,mysql,rstudio,
 let cond = process.argv[4]  //#<1,cpu>50,mem>50
 //var exec = deasync(cp.exec);
@@ -22,41 +26,43 @@ Date.prototype.yyyymmddhhmmss = function() {
    return "".concat(yyyy).concat('-').concat(mm).concat('-').concat(dd)
             .concat(' ').concat(hh).concat(':').concat(min).concat(':').concat(ss);
 };
-var email = {
-  title: 'Event '+ cond +' from '+os.hostname(),
-  value: 'Report/Email will be in next release'
+var msg_ios = {
+  channel_id: uuid,
+  msg:JSON.stringify({
+    aps:{
+      alert: 'Event:'+ cond +' proc:'+name+' host:'+os.hostname() +' time:'+(new Date()).yyyymmddhhmmss(),
+      sound:'default',
+    }
+  }),
+  msg_type: bpush.constant.MSG_TYPE.NOTIFICATION,
+  deploy_status: bpush.constant.DEPLOY_STATUS.DEVELOPMENT,
+  device_type: bpush.constant.DEVICE_TYPE.IOS 
+}
+var msg_and = {
+  channel_id: uuid,
+  msg:JSON.stringify({
+    title:'Event '+ cond +' proc:'+name,
+    description: "host:"+os.hostname()+" time:"+(new Date()).yyyymmddhhmmss(),
+    custom_content:{
+      'monitor': '1',
+      'time': (new Date()).yyyymmddhhmmss(),
+      'host': os.hostname(),
+      'condition': cond,
+    }
+  }),
+  msg_type: bpush.constant.MSG_TYPE.NOTIFICATION,
 }
 
-function note(app,me,email){
-  var params = {
-    app_id: app,
-    device_type: 9, //0:ios,1:android,2:amazon,3:win_phone_mpns,4:chrome_app,5:chrome_web_push,6:win_phone_wns,7:safari,8:firefox,9:macos
-    language: 'en',
-    contents: {
-        'en': email.title,
-    },
-    data: {
-        'custom': '1',
-        'title': email.title,
-        'value': email.value,
-        'time': (new Date()).yyyymmddhhmmss(),
-        'host': os.hostname(),
-        'condition': cond,
-        //'pics': ['1.jpg','2.jpg'],
-    },
-    //tags: [{ "key": "custom_tag", "relation": "=", "value": "custom_value"}],
-    include_player_ids: me.split(','),
-  };
-  onesignal_client.notifications.create('', params, function (err, response) {
-    if (err) {
-        console.log('Encountered error', err);
-    } else {
-        console.log(response);
-    }
-  });
+function note(channel_id,msg){
+  bpush.sendRequest(bpush.apis.pushMsgToSingleDevice,msg).then( function (resp) {
+        //data=JSON.parse(data)
+        console.log(resp)
+    }).catch( function(e) {
+        console.log(e);
+    });
 }
 function PS(list){
-    console.log('['+list.length+'] alive at : '+(new Date()).yyyymmddhhmmss()+' list='+JSON.stringify(list))
+    console.log('['+list.length+'] running at : '+(new Date()).yyyymmddhhmmss()+' list='+JSON.stringify(list))
 }
 //compare['<'](1,2)
 var compare = {
@@ -104,7 +110,7 @@ function findProc(uuid,name,cond,found,not_found){
 async.whilst(
     ()=>{return live},
     (next)=>{
-      findProc(uuid,name, cond, PS, ()=>note(ID,uuid,email)),
+      findProc(uuid,name, cond, PS, ()=>note(uuid,msg_and)),
       //child_process.execSync("sleep 5"); 
       //sleep(2000)
       setTimeout(next,5000);
